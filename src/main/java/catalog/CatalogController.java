@@ -9,12 +9,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import catalog.models.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * REST Controller to manage Inventory database
  */
 @RestController
 public class CatalogController {
+	@Autowired
+    InventoryRepo itemsRepo;
 
     Logger logger = LoggerFactory.getLogger(CatalogController.class);
 
@@ -24,7 +28,7 @@ public class CatalogController {
     @RequestMapping(value = "/items", method = RequestMethod.GET)
     @ResponseBody
     ResponseEntity<?> getInventory() {
-        return ResponseEntity.ok("[{\"id\": 1,\"name\":\"one\"},{\"id\":2,\"name\":\"two\"}]");
+      return itemsRepo.findAll();
     }
 
     /**
@@ -32,7 +36,11 @@ public class CatalogController {
      */
     @RequestMapping(value = "/items/{id}", method = RequestMethod.GET)
     ResponseEntity<?> getById(@PathVariable long id) {
-                return ResponseEntity.ok("{\"id\":1,\"name\":\"one\"}");
+        if (!itemsRepo.exists(id)) {
+                return ResponseEntity.notFound().build();
+        }
+        
+        return ResponseEntity.ok(itemsRepo.findOne(id));
     }
 
 }
