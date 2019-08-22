@@ -27,7 +27,7 @@ public class CatalogController {
      */
     @RequestMapping(value = "/items", method = RequestMethod.GET)
     @ResponseBody
-    ResponseEntity<?> getInventory() {
+    Iterable<Inventory> getInventory() {
       return itemsRepo.findAll();
     }
 
